@@ -31,7 +31,6 @@ module.exports = pull.pipeable(function (read, writer, ender) {
       } else read(null, function (end, data) {
         if(data) writer.call(emitter, data)
         if(end)  ender.call(emitter)
-        console.log('QUEUE', queue)
         process.nextTick(pull)
       })
     })()
