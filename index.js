@@ -31,7 +31,8 @@ module.exports = pull.pipeable(function (read, writer, ender) {
         cb(data === null, data)
       } else {
         read(ended, function (end, data) {
-          if(data) writer.call(emitter, data)
+           //null has no special meaning for pull-stream
+          if(data) writer.call(emitter, data || undefined)
           if(ended = end)  ender.call(emitter)
           process.nextTick(pull)
         })
