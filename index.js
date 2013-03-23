@@ -24,12 +24,13 @@ module.exports = pull.pipeable(function (read, writer, ender) {
   }
 
   return function (end, cb) {
+    ended = ended || end
     ;(function pull () {
       if(queue.length) {
         var data = queue.shift()
         cb(data === null, data)
-      } else (!ended)  {
-        read(null, function (end, data) {
+      } else {
+        read(ended, function (end, data) {
           if(data) writer.call(emitter, data)
           if(ended = end)  ender.call(emitter)
           process.nextTick(pull)
