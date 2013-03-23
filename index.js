@@ -1,7 +1,7 @@
 var pull = require('pull-stream')
 
 module.exports = pull.pipeable(function (read, writer, ender) {
-  var queue = []
+  var queue = [], ended
   
   function enqueue (data) {
     queue.push(data)
@@ -28,11 +28,13 @@ module.exports = pull.pipeable(function (read, writer, ender) {
       if(queue.length) {
         var data = queue.shift()
         cb(data === null, data)
-      } else read(null, function (end, data) {
-        if(data) writer.call(emitter, data)
-        if(end)  ender.call(emitter)
-        process.nextTick(pull)
-      })
+      } else (!ended)  {
+        read(null, function (end, data) {
+          if(data) writer.call(emitter, data)
+          if(ended = end)  ender.call(emitter)
+          process.nextTick(pull)
+        })
+      }
     })()
   }
 })
