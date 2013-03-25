@@ -23,7 +23,7 @@ var ts = through(function (data) {
 use `var self = this`, don't keep a reference.
 
 ``` js
-var WRONG = through(function (data) { WRONG.queue })
+var WRONG = through(function (data) { WRONG.queue(data) })
 ```
 
 ### DO
