@@ -8,7 +8,7 @@
     "url": "git://github.com/dominictarr/pull-through.git"
   },
   "dependencies": {
-    "pull-stream": "~2.0"
+    "pull-stream": "~2.14"
   },
   "devDependencies": {},
   "scripts": {
