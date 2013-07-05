@@ -1,5 +1,10 @@
 var pull = require('pull-stream')
 
+var next = 
+  'undefined' === typeof setImmediate 
+    ? setImmediate
+    : process.nextTick
+
 module.exports = pull.pipeable(function (read, writer, ender) {
   var queue = [], ended
   
@@ -34,7 +39,7 @@ module.exports = pull.pipeable(function (read, writer, ender) {
            //null has no special meaning for pull-stream
           if(data) writer.call(emitter, data || undefined)
           if(ended = end)  ender.call(emitter)
-          process.nextTick(pull)
+          next(pull)
         })
       }
     })()
