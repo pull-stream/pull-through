@@ -1,7 +1,7 @@
 var pull = require('pull-stream')
 
 var next = 
-  'undefined' === typeof setImmediate 
+  'undefined' !== typeof setImmediate 
     ? setImmediate
     : process.nextTick
 
