@@ -6,7 +6,7 @@ var next =
     : process.nextTick
 
 module.exports = pull.pipeable(function (read, writer, ender) {
-  var queue = [], ended
+  var queue = [], ended, error
   
   function enqueue (data) {
     queue.push(data)
@@ -25,7 +25,7 @@ module.exports = pull.pipeable(function (read, writer, ender) {
       console.error(event, data)
       if(event == 'data') enqueue(data)
       if(event == 'end')  enqueue(null)
-      if(event == 'error') ended = data
+      if(event == 'error') error = data
     },
     queue: enqueue
   }
@@ -33,7 +33,8 @@ module.exports = pull.pipeable(function (read, writer, ender) {
   return function (end, cb) {
     ended = ended || end
     ;(function pull () {
-      if(ended) cb(ended)
+      //if it's an error
+      if(error) cb(error)
       else if(queue.length) {
         var data = queue.shift()
         cb(data === null, data)
