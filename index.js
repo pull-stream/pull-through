@@ -22,8 +22,10 @@ module.exports = pull.pipeable(function (read, writer, ender) {
 
   var emitter = {
     emit: function (event, data) {
+      console.error(event, data)
       if(event == 'data') enqueue(data)
       if(event == 'end')  enqueue(null)
+      if(event == 'error') ended = data
     },
     queue: enqueue
   }
@@ -31,14 +33,16 @@ module.exports = pull.pipeable(function (read, writer, ender) {
   return function (end, cb) {
     ended = ended || end
     ;(function pull () {
-      if(queue.length) {
+      if(ended) cb(ended)
+      else if(queue.length) {
         var data = queue.shift()
         cb(data === null, data)
-      } else {
+      }
+      else {
         read(ended, function (end, data) {
            //null has no special meaning for pull-stream
           if(data) writer.call(emitter, data || undefined)
-          if(ended = end)  ender.call(emitter)
+          if(ended = ended || end)  ender.call(emitter)
           next(pull)
         })
       }
