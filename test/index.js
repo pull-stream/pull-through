@@ -35,11 +35,16 @@ tape('through + end', function (t) {
     pull.values([1,2,3]),
     through(function (data) {
       this.queue(data * 10)
+    }, function () {
+      this.queue(40)
+      this.queue(null)
     }),
     pull.collect(function (err, ary) {
       if(err) throw err
-      t.deepEqual(ary, [10, 20, 30])
+      t.deepEqual(ary, [10, 20, 30, 40])
       t.end()
     })
   )
 })
+
+
