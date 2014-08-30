@@ -47,4 +47,19 @@ tape('through + end', function (t) {
   )
 })
 
+tape('range error', function (t) {
 
+  var n = 0
+  pull(
+    pull.count(1000000),
+    through(function (data) {
+      n += data
+    }),
+    pull.drain(null, function () {
+      console.log(n)
+      t.equal(500000500000, n)
+      t.end()
+    })
+  )
+
+})
