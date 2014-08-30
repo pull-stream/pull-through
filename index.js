@@ -1,13 +1,9 @@
 var pull = require('pull-stream')
-
-var next = 
-  'undefined' !== typeof setImmediate 
-    ? setImmediate
-    : process.nextTick
+var looper = require('looper')
 
 module.exports = pull.pipeable(function (read, writer, ender) {
   var queue = [], ended, error
-  
+
   function enqueue (data) {
     queue.push(data)
   }
@@ -32,7 +28,7 @@ module.exports = pull.pipeable(function (read, writer, ender) {
 
   return function (end, cb) {
     ended = ended || end
-    ;(function pull () {
+    looper(function pull (next) {
       //if it's an error
       if(error) cb(error)
       else if(queue.length) {
@@ -47,7 +43,7 @@ module.exports = pull.pipeable(function (read, writer, ender) {
           next(pull)
         })
       }
-    })()
+    })
   }
 })
 

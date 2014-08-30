@@ -8,11 +8,12 @@
     "url": "git://github.com/dominictarr/pull-through.git"
   },
   "dependencies": {
-    "pull-stream": "~2.20"
+    "pull-stream": "~2.20",
+    "looper": "~3.0.0"
   },
   "devDependencies": {
     "pull-stream": "~2.22.2",
-    "tape": "~2.12.3"
+    "tape": "~2.14.0"
   },
   "scripts": {
     "test": "set -e; for t in test/*.js; do node $t; done"
