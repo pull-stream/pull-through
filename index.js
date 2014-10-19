@@ -18,7 +18,6 @@ module.exports = pull.pipeable(function (read, writer, ender) {
 
   var emitter = {
     emit: function (event, data) {
-      console.error(event, data)
       if(event == 'data') enqueue(data)
       if(event == 'end')  enqueue(null)
       if(event == 'error') error = data
@@ -38,6 +37,9 @@ module.exports = pull.pipeable(function (read, writer, ender) {
       else {
         read(ended, function (end, data) {
            //null has no special meaning for pull-stream
+          if(end && end !== true) {
+            error = end; return next()
+          }
           if(data) writer.call(emitter, data || undefined)
           if(ended = ended || end)  ender.call(emitter)
           next(pull)
