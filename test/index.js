@@ -63,3 +63,18 @@ tape('range error', function (t) {
   )
 
 })
+
+tape('pass error through', function (t) {
+
+  var err = new Error('testing errors')
+
+  pull(
+    pull.error(err),
+    through(console.log),
+    pull.drain(null, function (_err) {
+      t.equal(_err, err)
+      t.end()
+    })
+  )
+
+})
