@@ -40,8 +40,8 @@ module.exports = pull.pipeable(function (read, writer, ender) {
           if(end && end !== true) {
             error = end; return next()
           }
-          if(data) writer.call(emitter, data || undefined)
           if(ended = ended || end)  ender.call(emitter)
+          else if(data !== null) writer.call(emitter, data)
           next(pull)
         })
       }
