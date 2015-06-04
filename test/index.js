@@ -47,6 +47,25 @@ tape('through + end', function (t) {
   )
 })
 
+tape('through + end, falsey values', function (t) {
+  pull(
+    pull.values([0, 1,2,3]),
+    through(function (data) {
+      this.queue(data * 10)
+    }, function () {
+      this.queue(40)
+      this.queue(null)
+    }),
+    pull.collect(function (err, ary) {
+      if(err) throw err
+      t.deepEqual(ary, [0, 10, 20, 30, 40])
+      t.end()
+    })
+  )
+})
+
+
+
 tape('range error', function (t) {
 
   var n = 0
