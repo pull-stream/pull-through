@@ -1,7 +1,7 @@
 {
   "name": "pull-through",
   "description": "through ported to pull-stream style",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "homepage": "https://github.com/dominictarr/pull-through",
   "repository": {
     "type": "git",
