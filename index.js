@@ -24,15 +24,26 @@ module.exports = pull.pipeable(function (read, writer, ender) {
     },
     queue: enqueue
   }
-
+  var _cb
   return function (end, cb) {
     ended = ended || end
+    if(end)
+      return read(end, function () {
+        if(_cb) {
+          var t = _cb; _cb = null; t(end)
+        }
+        cb(end)
+      })
+
+    _cb = cb
     looper(function pull (next) {
       //if it's an error
-      if(error) cb(error)
+      if(!_cb) return
+      cb = _cb
+      if(error) _cb = null, cb(error)
       else if(queue.length) {
         var data = queue.shift()
-        cb(data === null, data)
+        _cb = null,cb(data === null, data)
       }
       else {
         read(ended, function (end, data) {
