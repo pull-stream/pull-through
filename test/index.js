@@ -138,3 +138,38 @@ tape('pass abort back to source in stalled stream', function (t) {
   })
 })
 
+tape('abort source on error', function (t) {
+  var err = new Error('intentional')
+
+  var read = pull(
+    pull.values([1,2,3], function (_err) {
+      t.equal(_err, err)
+      t.end()
+    }),
+    through(function (data) {
+      //do nothing. this will make through read ahead some more.
+      this.emit('error', err)
+    }),
+    pull.drain(null, function (_err) {
+      t.equal(_err, err)
+    })
+  )
+})
+
+
+tape('abort source on end within writer', function (t) {
+  var err = new Error('intentional')
+
+  var read = pull(
+    pull.values([1,2,3], function () {
+      t.end()
+    }),
+    through(function (data) {
+      //do nothing. this will make through read ahead some more.
+      this.emit('end', err)
+    }),
+    pull.drain(null, function (_err) {
+      t.equal(_err, null)
+    })
+  )
+})
