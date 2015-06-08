@@ -97,3 +97,44 @@ tape('pass error through', function (t) {
   )
 
 })
+
+tape('pass abort back to source', function (t) {
+  pull(
+    pull.values([1,2,3], function () { t.end() }),
+    through(function (data) {
+      this.queue(data)
+    }),
+    pull.take(1),
+    pull.collect(function (err, ary) {
+      t.deepEqual(ary, [1])
+    })
+  )
+
+})
+
+tape('pass abort back to source in stalled stream', function (t) {
+  var read = pull(
+    pull.values([1,2,3], function () { t.end() }),
+    pull.asyncMap(function (d, cb) {
+      setImmediate(function () {
+        cb(null, d)
+      })
+    }),
+    through(function (data) {
+      //do nothing. this will make through read ahead some more.
+    })
+  )
+
+  var c = 0, d = 0
+
+  read(null, function (err, data) {
+    t.equal(d, 1, 'unsatified read cb after abort called')
+    t.equal(c++, 0, 'unsatified read cb before abort cb')
+  })
+
+  d++
+  read(true, function (err) {
+    t.equal(c++, 1)
+  })
+})
+
