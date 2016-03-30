@@ -8,11 +8,10 @@
     "url": "git://github.com/dominictarr/pull-through.git"
   },
   "dependencies": {
-    "pull-stream": "~2.27.0",
     "looper": "~3.0.0"
   },
   "devDependencies": {
-    "pull-stream": "~2.26.0",
+    "pull-stream": "^3.2.3",
     "tape": "~4.0.0"
   },
   "scripts": {
@@ -21,3 +20,4 @@
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT"
 }
+
