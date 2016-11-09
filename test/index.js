@@ -30,6 +30,23 @@ tape('through', function (t) {
   )
 })
 
+tape('through async', function (t) {
+  pull(
+    pull.values([1,2,3]),
+    through(function (data) {
+      var self = this
+      setTimeout(function () {
+        self.queue(data * 10)
+      }, 10)
+    }),
+    pull.collect(function (err, ary) {
+      if(err) throw err
+      t.deepEqual(ary, [10, 20, 30])
+      t.end()
+    })
+  )
+})
+
 tape('through + end', function (t) {
   pull(
     pull.values([1,2,3]),
